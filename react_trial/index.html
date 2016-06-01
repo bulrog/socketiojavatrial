@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Trial react JS sixth</title>
+		<link rel='stylesheet' href="css/bundle.css"/>
+		<script src="node_modules/socket.io/node_modules/socket.io-client/socket.io.js"></script>
+		<script src="http://www.chartjs.org/assets/Chart.min.js"></script>
+		<script src="node_modules/smoothie/smoothie.js"></script>
+		<script src="dist/scripts/plotly-latest.min.js"></script>
+	</head>
+	<body>
+		<div id="plotDiv" style="width:1000px;height:500px;"></div>
+		<script>
+		var plotDiv = document.getElementById('plotDiv');
+
+		var data = [{
+			x: [ new Date().getTime() / 1000 ],
+			y: [0]
+		}];
+
+		Plotly.plot(plotDiv, data, { title: 'Random Over Time'});
+
+		setInterval(function(){
+			var update = {
+				x: [[ new Date().getTime() / 1000 ]],
+				y: [[ Math.random() ]]
+			};
+			
+		    Plotly.extendTraces(plotDiv, update, [0], 100);
+		}, 1000);
+
+		</script>
+
+		<div>
+			<canvas id="smoothie-chart" width="1000" height="100"/>
+			<script type="text/javascript">
+				var smoothie = new SmoothieChart({interpolation:'linear',
+						millisPerPixel:200,
+					  	grid: { strokeStyle:'rgb(125, 0, 0)', fillStyle:'rgb(60, 0, 0)',
+					          lineWidth: 1, millisPerLine: 250, verticalSections: 6, },
+					  labels: { fillStyle:'rgb(60, 0, 0)' }
+					});
+				smoothie.streamTo(document.getElementById("smoothie-chart"));
+				// Data
+				var line1 = new TimeSeries();
+				var line2 = new TimeSeries();
+
+				// Add a random value to each line every second
+				setInterval(function() {
+				  line1.append(new Date().getTime(), Math.random());
+				  line2.append(new Date().getTime(), Math.random());
+				}, 1000);
+
+				// Add to SmoothieChart
+				smoothie.addTimeSeries(line1,
+				  { strokeStyle:'rgb(0, 255, 0)', fillStyle:'rgba(0, 255, 0, 0.4)', lineWidth:3 });
+				smoothie.addTimeSeries(line2,
+				  { strokeStyle:'rgb(255, 0, 255)', fillStyle:'rgba(255, 0, 255, 0.3)', lineWidth:3 });		</script>
+			<script type="text/javascript">
+				var socket=io.connect('http://localhost:8082');
+				socket.emit("messages","hello I'm the client");
+				socket.on('messages',function(data){
+					alert(data);
+
+				});
+				socket.on("disconnect",function(){
+					alert("I got disconnected!");
+					socket.close();
+				});
+				
+
+			</script>
+		</div>
+
+		<div>
+			<canvas id="updating-chart" width="1000" />
+			<script type="text/javascript">
+				var canvas = document.getElementById('updating-chart'),
+			    ctx = canvas.getContext('2d'),
+			    startingData = {
+			      labels: [1, 2, 3, 4, 5, 6, 7],
+			      datasets: [
+			          {
+			              fillColor: "rgba(220,220,220,0.2)",
+			              strokeColor: "rgba(220,220,220,1)",
+			              pointColor: "rgba(220,220,220,1)",
+			              pointStrokeColor: "#fff",
+			              data: [65, 59, 80, 81, 56, 55, 40]
+			          },
+			          {
+			              fillColor: "rgba(151,187,205,0.2)",
+			              strokeColor: "rgba(151,187,205,1)",
+			              pointColor: "rgba(151,187,205,1)",
+			              pointStrokeColor: "#fff",
+			              data: [28, 48, 40, 19, 86, 27, 90]
+			          }
+			      ]
+			    },
+			    latestLabel = startingData.labels[6],
+			    amountPoints=0;
+
+
+			// Reduce the animation steps for demo clarity.
+			var myLiveChart = new Chart(ctx).Line(startingData, {animationSteps:1});
+
+
+			setInterval(function(){
+			  // Add two random numbers for each dataset
+			  myLiveChart.addData([Math.random() * 100, Math.random() * 100], ++latestLabel);
+			  amountPoints++;
+			  // Remove the first point so we dont just add values forever
+			  if (amountPoints>100){
+			    myLiveChart.removeData(); 
+			  }
+			   
+			},300);
+			</script>
+		</div>
+	</body>
+</html>
