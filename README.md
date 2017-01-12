@@ -20,12 +20,13 @@ When reload the page you should get a pop up showing you get connected
 
 ## java socket as server:
 in react_trial/index.html put port to 8082
- Then run the SocketIOServerTrial and the index page should connect to it
+ Then open in IDE the socketio-trial-server and run the SocketIOServerTrial and the index page should connect to it
 
 ## java socket io client:
-After running expresstrial.js just run SocketIOTrial then it should connect to express server
+After running expresstrial.js just run SocketIOTrial (open project socketio-trial in IDE and run the class ) then it should connect to express server
 
 #react trial
 run:
-/node_modules/.bin/gulp that will open a page in browser which renders a title (react component)
+in the project go to react_trial module and do:
+./node_modules/.bin/gulp that will open a page in browser which renders a title (react component)
 and below it a trial of plotting.
