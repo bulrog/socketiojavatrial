@@ -35,8 +35,7 @@ public class SocketIOServerTrial {
                 System.out.println("client is not connected anymore!");
             }
         });
-        socketIOServer.getAllClients()
-        socketIOServer.start();
+       socketIOServer.start();
 
         Thread.sleep(3600000);
         socketIOServer.stop();
